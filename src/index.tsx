@@ -6,6 +6,7 @@ import * as ReactDOM from "react-dom";
 class Hello extends React.Component<any, any> {
 
 	state:any = {
+		quizes:[],
 		options: [],
 		answers:[]
 	}
@@ -36,10 +37,6 @@ class Hello extends React.Component<any, any> {
 	}
 
 	updateAnswers(index:any){
-
-		console.log(document.querySelector('input[type=checkbox]:eq('+index+')'), "$$$$");
-		// if()
-
 		this.state.answers[index] = this.state.options[index]
 	}
 
@@ -54,12 +51,60 @@ class Hello extends React.Component<any, any> {
 		let answers= this.state.options.filter((option:any)=>{
 			return option.checked
 		})
-
 		this.setState({answers: answers})
+	}
+
+
+	addQuiz(){
+		this.state.quizes.push({
+			question: "what is your quiz quetsoin?",
+			options: [],
+			rightAnswer:[]
+		})
+		this.setState({quizes: this.state.quizes})
+	}
+
+	addQuizOption(e:any){
+		let index= parseInt(e.target.dataset.index)
+		this.state.quizes[index].options.push("option 1")
+		this.setState({quizes: this.state.quizes})
+	}
+
+	setRightAnswer(e:any){
+		let quizIndex= e.target.dataset.option
+		let index= e.target.dataset.index
+	}
+
+	setQuizQuestion(e:any){
+
+		let index=parseInt(e.target.dataset.index)
+		this.state.quizes[index].question = e.target.value
+		this.setState({quizes: this.state.quizes})
 	}
 
     render() {
         return <div>
+
+        	<h3>Your Unit</h3>
+
+       		{this.state.quizes.map((quiz:any, index:any)=>{
+            	return (
+
+            		<div key={index}>
+            			<label>Question: </label>
+            			<input type="text" data-index={index} value={quiz.question} onChange={(e)=>this.setQuizQuestion(e)}/>
+            			<br />
+            			{quiz.options.map((option:any, optionIndex:any)=>{
+				            	return (<div key={optionIndex}><input type="checkbox" onChange={(e)=>this.setRightAnswer(e)} data-quiz={index} data-index={optionIndex}/><input type="text" data-quiz={index} data-index={optionIndex} /></div>)
+				            })}
+
+            			<button data-index={index} onClick={(e)=>this.addQuizOption(e)}>Add Options</button>
+            			<hr />
+            		</div>
+            	)
+            })}
+
+
    			{this.state.options.map((option:any, index:any)=>{
             	return (
             		<div key={index}>
@@ -69,9 +114,10 @@ class Hello extends React.Component<any, any> {
             	 	</div>
             	 )
             })}
-   			<hr />
 
-   			<button className="btn btn-sm btn-danger" onClick={()=>this.add()}>Add +</button>
+   			<button onClick={()=>this.addQuiz()}>Add Quiz</button>
+
+   			{/*<button className="btn btn-sm btn-danger" onClick={()=>this.add()}>Add +</button>
 
    			<hr />
 
@@ -83,7 +129,7 @@ class Hello extends React.Component<any, any> {
 
             	return (<li key={index}>{answer.option}</li>)
 
-            })}
+            })}*/}
 
         </div>;
     }
